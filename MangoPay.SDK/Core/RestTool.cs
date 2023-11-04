@@ -24,11 +24,13 @@ namespace MangoPay.SDK.Core
             _options = new RestClientOptions(url)
             {
                 ThrowOnAnyError = false,
-                Timeout = timeout
+                MaxTimeout = timeout
             };
 
-            Client = new RestClient(_options);
-            Client.UseSerializer<MangoPaySerializer>();
+			ConfigureSerialization configureMangoPaySerializer = s => s.UseSerializer(() => new MangoPaySerializer());
+            Client = new RestClient(
+				_options,
+				configureSerialization: configureMangoPaySerializer);
         }
 
         public static RestSharpDto GetInstance(string url, int timeout)
